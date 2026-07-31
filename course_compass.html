@@ -4,103 +4,144 @@
 <meta charset="UTF-8">
 <title>Course Compass</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Libre+Franklin:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#EAE3D2;
-    --ink:#1C2B39;
-    --ink-soft:#3C4B58;
-    --route:#2F6E63;
-    --route-soft:#A9C6BF;
-    --gold:#B08D3D;
-    --coral:#A64B3F;
-    --line: rgba(28,43,57,0.18);
+    --bg:#F7F8FA;
+    --card:#FFFFFF;
+    --ink:#111827;
+    --ink-soft:#6B7280;
+    --ink-faint:#9CA3AF;
+    --primary:#4F46E5;
+    --primary-hover:#4338CA;
+    --primary-soft:#EEF0FE;
+    --good:#059669;
+    --good-soft:#ECFDF5;
+    --mid:#D97706;
+    --mid-soft:#FFFBEB;
+    --border:#E5E7EB;
+    --shadow: 0 1px 2px rgba(17,24,39,0.04), 0 8px 24px -12px rgba(17,24,39,0.10);
   }
   *{box-sizing:border-box;}
   body{
     margin:0; min-height:100vh;
-    background:var(--paper);
-    background-image:
-      radial-gradient(circle at 15% 20%, rgba(47,110,99,0.06), transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(176,141,61,0.08), transparent 45%);
+    background:var(--bg);
     color:var(--ink);
-    font-family:'Libre Franklin', sans-serif;
-    padding:36px 20px 60px;
+    font-family:'Inter', sans-serif;
+    padding:48px 20px 70px;
+    -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:720px; margin:0 auto;}
+  .wrap{max-width:640px; margin:0 auto;}
   .eyebrow{
-    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.14em;
-    text-transform:uppercase; color:var(--route); margin-bottom:10px;
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--primary); margin-bottom:14px; font-weight:500;
   }
   h1{
-    font-family:'Fraunces', serif; font-weight:600; font-size:40px; line-height:1.05;
-    margin:0 0 12px; letter-spacing:-0.01em;
+    font-family:'Sora', sans-serif; font-weight:700; font-size:36px; line-height:1.15;
+    margin:0 0 14px; letter-spacing:-0.02em; color:var(--ink);
   }
-  h1 em{font-style:italic; font-weight:500; color:var(--route);}
-  p.sub{color:var(--ink-soft); font-size:15px; line-height:1.6; max-width:520px;}
+  h1 span{color:var(--primary);}
+  p.sub{color:var(--ink-soft); font-size:15.5px; line-height:1.65; max-width:480px; margin:0;}
   .screen{display:none;}
-  .screen.active{display:block;}
+  .screen.active{display:block; animation:fadein .25s ease;}
+  @keyframes fadein{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
 
-  .start-btn, .next-btn, .back-link, .course-btn{
-    font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:0.05em;
-    text-transform:uppercase; cursor:pointer; border:none;
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    box-shadow:var(--shadow); padding:32px;
   }
+
   .start-btn{
-    margin-top:22px; background:var(--ink); color:var(--paper);
-    padding:13px 26px; border-radius:2px;
+    margin-top:26px; background:var(--primary); color:#fff; font-family:'Inter',sans-serif;
+    font-weight:600; font-size:14.5px; border:none; cursor:pointer;
+    padding:13px 24px; border-radius:10px; transition:background .15s, transform .1s;
   }
-  .start-btn:hover{background:var(--route);}
+  .start-btn:hover{background:var(--primary-hover);}
+  .start-btn:active{transform:scale(0.98);}
 
-  .progress-track{height:3px; background:var(--line); border-radius:2px; margin:26px 0 30px; overflow:hidden;}
-  .progress-fill{height:100%; background:var(--route); width:0%; transition:width .35s ease;}
-  .q-count{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); margin-bottom:8px;}
-  .q-text{font-family:'Fraunces',serif; font-size:26px; line-height:1.25; margin-bottom:26px; max-width:560px;}
+  .progress-track{height:6px; background:var(--border); border-radius:10px; margin:24px 0 32px; overflow:hidden;}
+  .progress-fill{height:100%; background:var(--primary); width:0%; transition:width .35s ease; border-radius:10px;}
+  .q-count{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-faint); margin-bottom:6px; font-weight:500;}
+  .q-text{font-family:'Sora',sans-serif; font-weight:600; font-size:22px; line-height:1.35; margin-bottom:24px; color:var(--ink);}
   .options{display:flex; flex-direction:column; gap:10px;}
   .option{
-    text-align:left; background:transparent; border:1px solid var(--line); border-radius:2px;
-    padding:15px 18px; font-family:'Libre Franklin',sans-serif; font-size:15px; color:var(--ink);
-    cursor:pointer; transition: border-color .15s, background .15s;
+    text-align:left; background:var(--card); border:1.5px solid var(--border); border-radius:12px;
+    padding:15px 18px; font-family:'Inter',sans-serif; font-size:14.5px; font-weight:500; color:var(--ink);
+    cursor:pointer; transition: border-color .15s, background .15s, transform .1s;
+    display:flex; align-items:center; gap:12px;
   }
-  .option:hover{border-color:var(--route); background:rgba(47,110,99,0.05);}
-  .quiz-nav{margin-top:24px; display:flex; justify-content:space-between; align-items:center;}
-  .back-link{background:none; color:var(--ink-soft); padding:0;}
+  .option::before{
+    content:""; width:8px; height:8px; border-radius:50%; border:1.5px solid var(--border);
+    flex-shrink:0; transition:border-color .15s, background .15s;
+  }
+  .option:hover{border-color:var(--primary); background:var(--primary-soft);}
+  .option:hover::before{border-color:var(--primary); background:var(--primary);}
+  .quiz-nav{margin-top:22px; display:flex; justify-content:space-between; align-items:center;}
+  .back-link{
+    background:none; border:none; color:var(--ink-faint); font-family:'Inter',sans-serif;
+    font-size:13.5px; font-weight:500; cursor:pointer; padding:0;
+  }
   .back-link:hover{color:var(--ink);}
 
-  .rank-list{list-style:none; margin:26px 0 0; padding:0;}
+  .rank-list{list-style:none; margin:24px 0 0; padding:0; display:flex; flex-direction:column; gap:10px;}
   .rank-item{
-    display:grid; grid-template-columns: 34px 1fr 60px; gap:14px; align-items:center;
-    padding:16px 4px; border-top:1px solid var(--line); cursor:pointer; border-radius:2px;
+    display:grid; grid-template-columns: 30px 1fr 72px; gap:14px; align-items:center;
+    padding:16px; cursor:pointer; border-radius:12px; border:1.5px solid var(--border);
+    transition:border-color .15s, background .15s;
   }
-  .rank-item:hover{background:rgba(47,110,99,0.06);}
-  .rank-item:first-child{border-top:none;}
-  .rank-num{font-family:'Fraunces',serif; font-size:22px; font-weight:600; color:var(--route-soft);}
-  .rank-item:nth-child(1) .rank-num{color:var(--gold);}
-  .course-name{font-weight:700; font-size:16px; margin-bottom:3px;}
+  .rank-item:hover{border-color:var(--primary); background:var(--primary-soft);}
+  .rank-num{font-family:'Sora',sans-serif; font-size:17px; font-weight:700; color:var(--ink-faint);}
+  .rank-item:nth-child(1) .rank-num{color:var(--primary);}
+  .course-name{font-weight:600; font-size:15px; margin-bottom:3px; color:var(--ink);}
   .course-meta{font-size:12.5px; color:var(--ink-soft);}
-  .match-pct{font-family:'JetBrains Mono',monospace; font-size:19px; text-align:right;}
-  .redo-link{margin-top:26px; display:inline-block;}
-
-  .detail-back{margin-bottom:18px; color:var(--route); background:none; padding:0;}
-  .detail-back:hover{text-decoration:underline;}
-  .detail-head{border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:24px;}
-  .detail-match{
-    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:12px;
-    background:rgba(176,141,61,0.15); color:var(--gold); padding:3px 10px; border-radius:20px; margin-bottom:12px;
+  .match-pct{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; text-align:center;
+    padding:5px 0; border-radius:20px; background:var(--good-soft); color:var(--good);
   }
-  h2{font-family:'Fraunces',serif; font-weight:600; font-size:30px; margin:0 0 6px;}
-  .licensure{font-size:13px; color:var(--coral); font-style:italic;}
+  .match-pct.mid{background:var(--mid-soft); color:var(--mid);}
+  .redo-link{margin-top:22px; display:inline-block;}
+
+  .strengths{margin-top:28px; padding-top:22px; border-top:1px solid var(--border);}
+  .strengths-title{font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-faint); margin-bottom:14px;}
+  .strength-row{display:grid; grid-template-columns:120px 1fr 34px; align-items:center; gap:10px; margin-bottom:9px;}
+  .strength-label{font-size:13px; color:var(--ink-soft); font-weight:500;}
+  .strength-track{height:6px; background:var(--border); border-radius:6px; overflow:hidden;}
+  .strength-fill{height:100%; background:var(--primary); border-radius:6px;}
+  .strength-val{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-faint); text-align:right;}
+
+  .detail-back{
+    margin-bottom:20px; color:var(--primary); background:none; border:none; padding:0;
+    font-family:'Inter',sans-serif; font-size:13.5px; font-weight:600; cursor:pointer;
+  }
+  .detail-back:hover{text-decoration:underline;}
+  .detail-head{border-bottom:1px solid var(--border); padding-bottom:22px; margin-bottom:24px;}
+  .detail-match{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500;
+    background:var(--good-soft); color:var(--good); padding:4px 12px; border-radius:20px; margin-bottom:14px;
+  }
+  h2{font-family:'Sora',sans-serif; font-weight:700; font-size:26px; margin:0 0 8px; letter-spacing:-0.01em;}
+  .licensure{font-size:13px; color:var(--ink-soft);}
   .section-label{
-    font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase;
-    letter-spacing:0.1em; color:var(--route); margin:28px 0 12px;
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase;
+    letter-spacing:0.08em; color:var(--primary); margin:26px 0 14px; font-weight:500;
   }
   .year-block{
-    border-left:2px solid var(--route-soft); padding-left:16px; margin-bottom:16px;
+    position:relative; padding-left:22px; margin-bottom:18px;
   }
-  .year-title{font-family:'Fraunces',serif; font-style:italic; font-size:16px; margin-bottom:4px;}
-  .year-subjects{font-size:14px; color:var(--ink-soft); line-height:1.6;}
+  .year-block::before{
+    content:""; position:absolute; left:0; top:4px; width:9px; height:9px; border-radius:50%;
+    background:var(--primary-soft); border:2px solid var(--primary);
+  }
+  .year-block::after{
+    content:""; position:absolute; left:4px; top:16px; bottom:-14px; width:1.5px; background:var(--border);
+  }
+  .year-block:last-child::after{display:none;}
+  .year-title{font-family:'Sora',sans-serif; font-weight:600; font-size:14.5px; margin-bottom:4px; color:var(--ink);}
+  .year-subjects{font-size:13.5px; color:var(--ink-soft); line-height:1.6;}
   .job-grid{display:flex; flex-wrap:wrap; gap:8px;}
   .job-pill{
-    font-size:13px; padding:7px 13px; border:1px solid var(--line); border-radius:20px; background:rgba(47,110,99,0.04);
+    font-size:13px; font-weight:500; padding:7px 14px; border:1px solid var(--border);
+    border-radius:20px; background:var(--bg); color:var(--ink);
   }
 </style>
 </head>
@@ -108,44 +149,56 @@
 <div class="wrap">
 
   <section class="screen active" id="screen-intro">
-    <div class="eyebrow">Prototype · knowledge-graph course matcher</div>
-    <h1>Course <em>Compass</em></h1>
-    <p class="sub">Ten quick questions about how you think, work, and what pulls your attention. No right answers — just answer as yourself, not who you think you should be.</p>
-    <button class="start-btn" onclick="startQuiz()">Begin self-assessment →</button>
+    <div class="card">
+      <div class="eyebrow">Course recommender · knowledge-graph matching</div>
+      <h1>Find your <span>college fit</span></h1>
+      <p class="sub">Ten quick questions about how you think, work, and what pulls your attention. No right answers — just answer as yourself, not who you think you should be.</p>
+      <button class="start-btn" onclick="startQuiz()">Begin self-assessment →</button>
+    </div>
   </section>
 
   <section class="screen" id="screen-quiz">
-    <div class="q-count" id="q-count">Question 1 of 10</div>
-    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-    <div class="q-text" id="q-text"></div>
-    <div class="options" id="q-options"></div>
-    <div class="quiz-nav">
-      <button class="back-link" id="q-back" onclick="prevQuestion()">← back</button>
-      <span></span>
+    <div class="card">
+      <div class="q-count" id="q-count">Question 1 of 10</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+      <div class="quiz-nav">
+        <button class="back-link" id="q-back" onclick="prevQuestion()">← Back</button>
+        <span></span>
+      </div>
     </div>
   </section>
 
   <section class="screen" id="screen-results">
-    <div class="eyebrow">Your bearings</div>
-    <h1>Nearest <em>programs</em></h1>
-    <p class="sub">Ranked by how closely your profile matches each program's demands, across 8 traits. Tap any program to see the 4-year path and where it tends to lead.</p>
-    <ol class="rank-list" id="rank-list"></ol>
-    <a class="redo-link back-link" onclick="startQuiz()">↺ retake the assessment</a>
+    <div class="card">
+      <div class="eyebrow">Your results</div>
+      <h1>Nearest <span>programs</span></h1>
+      <p class="sub">Ranked by how closely your profile matches each program's demands, across 8 traits. Tap any program to see the 4-year path and where it tends to lead.</p>
+      <ol class="rank-list" id="rank-list"></ol>
+      <div class="strengths">
+        <div class="strengths-title">Your top traits</div>
+        <div id="strengths-bars"></div>
+      </div>
+      <a class="redo-link back-link" onclick="startQuiz()" style="cursor:pointer;">↺ Retake the assessment</a>
+    </div>
   </section>
 
   <section class="screen" id="screen-detail">
-    <button class="detail-back" onclick="showResults()">← back to matches</button>
-    <div class="detail-head">
-      <div class="detail-match" id="d-match">— % match</div>
-      <h2 id="d-name"></h2>
-      <div class="licensure" id="d-licensure"></div>
+    <div class="card">
+      <button class="detail-back" onclick="showResults()">← Back to matches</button>
+      <div class="detail-head">
+        <div class="detail-match" id="d-match">— % match</div>
+        <h2 id="d-name"></h2>
+        <div class="licensure" id="d-licensure"></div>
+      </div>
+
+      <div class="section-label">Four-year path</div>
+      <div id="d-years"></div>
+
+      <div class="section-label">Where this tends to lead</div>
+      <div class="job-grid" id="d-jobs"></div>
     </div>
-
-    <div class="section-label">Four-year path</div>
-    <div id="d-years"></div>
-
-    <div class="section-label">Where this tends to lead</div>
-    <div class="job-grid" id="d-jobs"></div>
   </section>
 
 </div>
@@ -330,9 +383,15 @@ const COURSES = [
     jobs:['Travel Consultant','Hotel Operations Staff','Event Planner','Airline Cabin Crew']},
 ];
 
+const TRAIT_LABELS = {
+  logic:'Logic', creative:'Creativity', people:'Empathy', comm:'Communication',
+  detail:'Precision', hands:'Hands-on', lead:'Leadership', science:'Science'
+};
+
 let currentQ = 0;
 let answers = new Array(QUESTIONS.length).fill(null);
 let scoredResults = [];
+let lastProfile = [];
 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -387,11 +446,25 @@ function finishQuiz(){
     Object.entries(pts).forEach(([t,v])=>raw[t]+=v);
   });
   const profile = TRAITS.map(t => TRAIT_MAX[t]>0 ? (raw[t]/TRAIT_MAX[t])*10 : 0);
+  lastProfile = profile;
 
   scoredResults = COURSES.map(c=>({...c, score: cosine(profile, c.v)}))
                           .sort((a,b)=>b.score-a.score);
   renderResults();
+  renderStrengths();
   showScreen('screen-results');
+}
+
+function renderStrengths(){
+  const ranked = TRAITS.map((t,i)=>({t, val:lastProfile[i]})).sort((a,b)=>b.val-a.val).slice(0,4);
+  const el = document.getElementById('strengths-bars');
+  el.innerHTML = ranked.map(r=>`
+    <div class="strength-row">
+      <div class="strength-label">${TRAIT_LABELS[r.t]}</div>
+      <div class="strength-track"><div class="strength-fill" style="width:${Math.min(100,r.val*10)}%"></div></div>
+      <div class="strength-val">${r.val.toFixed(1)}</div>
+    </div>
+  `).join('');
 }
 
 function cosine(a,b){
@@ -407,13 +480,14 @@ function renderResults(){
     const li = document.createElement('li');
     li.className = 'rank-item';
     li.onclick = ()=>showDetail(c);
+    const pctClass = c.score >= 0.75 ? '' : 'mid';
     li.innerHTML = `
       <div class="rank-num">${i+1}</div>
       <div>
         <div class="course-name">${c.name}</div>
         <div class="course-meta">${c.jobs.slice(0,3).join(', ')}</div>
       </div>
-      <div class="match-pct">${Math.round(c.score*100)}%</div>
+      <div class="match-pct ${pctClass}">${Math.round(c.score*100)}%</div>
     `;
     list.appendChild(li);
   });
