@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Course Compass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Libre+Franklin:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EAE3D2;
+    --ink:#1C2B39;
+    --ink-soft:#3C4B58;
+    --route:#2F6E63;
+    --route-soft:#A9C6BF;
+    --gold:#B08D3D;
+    --coral:#A64B3F;
+    --line: rgba(28,43,57,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(47,110,99,0.06), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(176,141,61,0.08), transparent 45%);
+    color:var(--ink);
+    font-family:'Libre Franklin', sans-serif;
+    padding:36px 20px 60px;
+  }
+  .wrap{max-width:720px; margin:0 auto;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--route); margin-bottom:10px;
+  }
+  h1{
+    font-family:'Fraunces', serif; font-weight:600; font-size:40px; line-height:1.05;
+    margin:0 0 12px; letter-spacing:-0.01em;
+  }
+  h1 em{font-style:italic; font-weight:500; color:var(--route);}
+  p.sub{color:var(--ink-soft); font-size:15px; line-height:1.6; max-width:520px;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  .start-btn, .next-btn, .back-link, .course-btn{
+    font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:0.05em;
+    text-transform:uppercase; cursor:pointer; border:none;
+  }
+  .start-btn{
+    margin-top:22px; background:var(--ink); color:var(--paper);
+    padding:13px 26px; border-radius:2px;
+  }
+  .start-btn:hover{background:var(--route);}
+
+  .progress-track{height:3px; background:var(--line); border-radius:2px; margin:26px 0 30px; overflow:hidden;}
+  .progress-fill{height:100%; background:var(--route); width:0%; transition:width .35s ease;}
+  .q-count{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); margin-bottom:8px;}
+  .q-text{font-family:'Fraunces',serif; font-size:26px; line-height:1.25; margin-bottom:26px; max-width:560px;}
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option{
+    text-align:left; background:transparent; border:1px solid var(--line); border-radius:2px;
+    padding:15px 18px; font-family:'Libre Franklin',sans-serif; font-size:15px; color:var(--ink);
+    cursor:pointer; transition: border-color .15s, background .15s;
+  }
+  .option:hover{border-color:var(--route); background:rgba(47,110,99,0.05);}
+  .quiz-nav{margin-top:24px; display:flex; justify-content:space-between; align-items:center;}
+  .back-link{background:none; color:var(--ink-soft); padding:0;}
+  .back-link:hover{color:var(--ink);}
+
+  .rank-list{list-style:none; margin:26px 0 0; padding:0;}
+  .rank-item{
+    display:grid; grid-template-columns: 34px 1fr 60px; gap:14px; align-items:center;
+    padding:16px 4px; border-top:1px solid var(--line); cursor:pointer; border-radius:2px;
+  }
+  .rank-item:hover{background:rgba(47,110,99,0.06);}
+  .rank-item:first-child{border-top:none;}
+  .rank-num{font-family:'Fraunces',serif; font-size:22px; font-weight:600; color:var(--route-soft);}
+  .rank-item:nth-child(1) .rank-num{color:var(--gold);}
+  .course-name{font-weight:700; font-size:16px; margin-bottom:3px;}
+  .course-meta{font-size:12.5px; color:var(--ink-soft);}
+  .match-pct{font-family:'JetBrains Mono',monospace; font-size:19px; text-align:right;}
+  .redo-link{margin-top:26px; display:inline-block;}
+
+  .detail-back{margin-bottom:18px; color:var(--route); background:none; padding:0;}
+  .detail-back:hover{text-decoration:underline;}
+  .detail-head{border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:24px;}
+  .detail-match{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:12px;
+    background:rgba(176,141,61,0.15); color:var(--gold); padding:3px 10px; border-radius:20px; margin-bottom:12px;
+  }
+  h2{font-family:'Fraunces',serif; font-weight:600; font-size:30px; margin:0 0 6px;}
+  .licensure{font-size:13px; color:var(--coral); font-style:italic;}
+  .section-label{
+    font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase;
+    letter-spacing:0.1em; color:var(--route); margin:28px 0 12px;
+  }
+  .year-block{
+    border-left:2px solid var(--route-soft); padding-left:16px; margin-bottom:16px;
+  }
+  .year-title{font-family:'Fraunces',serif; font-style:italic; font-size:16px; margin-bottom:4px;}
+  .year-subjects{font-size:14px; color:var(--ink-soft); line-height:1.6;}
+  .job-grid{display:flex; flex-wrap:wrap; gap:8px;}
+  .job-pill{
+    font-size:13px; padding:7px 13px; border:1px solid var(--line); border-radius:20px; background:rgba(47,110,99,0.04);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="screen active" id="screen-intro">
+    <div class="eyebrow">Prototype · knowledge-graph course matcher</div>
+    <h1>Course <em>Compass</em></h1>
+    <p class="sub">Ten quick questions about how you think, work, and what pulls your attention. No right answers — just answer as yourself, not who you think you should be.</p>
+    <button class="start-btn" onclick="startQuiz()">Begin self-assessment →</button>
+  </section>
+
+  <section class="screen" id="screen-quiz">
+    <div class="q-count" id="q-count">Question 1 of 10</div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="q-options"></div>
+    <div class="quiz-nav">
+      <button class="back-link" id="q-back" onclick="prevQuestion()">← back</button>
+      <span></span>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-results">
+    <div class="eyebrow">Your bearings</div>
+    <h1>Nearest <em>programs</em></h1>
+    <p class="sub">Ranked by how closely your profile matches each program's demands, across 8 traits. Tap any program to see the 4-year path and where it tends to lead.</p>
+    <ol class="rank-list" id="rank-list"></ol>
+    <a class="redo-link back-link" onclick="startQuiz()">↺ retake the assessment</a>
+  </section>
+
+  <section class="screen" id="screen-detail">
+    <button class="detail-back" onclick="showResults()">← back to matches</button>
+    <div class="detail-head">
+      <div class="detail-match" id="d-match">— % match</div>
+      <h2 id="d-name"></h2>
+      <div class="licensure" id="d-licensure"></div>
+    </div>
+
+    <div class="section-label">Four-year path</div>
+    <div id="d-years"></div>
+
+    <div class="section-label">Where this tends to lead</div>
+    <div class="job-grid" id="d-jobs"></div>
+  </section>
+
+</div>
+
+<script>
+const TRAITS = ['logic','creative','people','comm','detail','hands','lead','science'];
+
+const QUESTIONS = [
+  {text:"When solving a tricky problem, you'd rather...", options:[
+    {label:"Analyze data and look for patterns", pts:{logic:3}},
+    {label:"Sketch out a few creative solutions", pts:{creative:3}},
+    {label:"Talk it through with other people", pts:{people:2,comm:2}},
+    {label:"Break it into precise, careful steps", pts:{detail:3}},
+  ]},
+  {text:"In a group project, you naturally become...", options:[
+    {label:"The one who plans and leads", pts:{lead:3}},
+    {label:"The one who presents to the class", pts:{comm:3}},
+    {label:"The researcher who checks the facts", pts:{logic:2,detail:1}},
+    {label:"The one who designs how it looks", pts:{creative:3}},
+  ]},
+  {text:"Which subject did you actually enjoy in school?", options:[
+    {label:"Math or Physics", pts:{logic:3,science:1}},
+    {label:"Biology or Chemistry", pts:{science:3}},
+    {label:"Araling Panlipunan or Filipino", pts:{comm:2,people:1}},
+    {label:"Arts, Music, or TLE", pts:{creative:3}},
+  ]},
+  {text:"A messy, disorganized room makes you...", options:[
+    {label:"Itch to sort and organize it", pts:{detail:3}},
+    {label:"Not bothered — mess is fine", pts:{creative:1}},
+    {label:"Want to redesign the whole layout", pts:{creative:2,hands:1}},
+    {label:"Delegate it to someone else", pts:{lead:2}},
+  ]},
+  {text:"An ideal free weekend involves...", options:[
+    {label:"Building or fixing something with your hands", pts:{hands:3}},
+    {label:"Volunteering or helping someone out", pts:{people:3}},
+    {label:"Reading up on new tech or science", pts:{logic:2,science:1}},
+    {label:"Planning a trip or event for friends", pts:{lead:2,comm:1}},
+  ]},
+  {text:"In a crisis, people come to you for...", options:[
+    {label:"Calm, clear-headed decisions", pts:{logic:2,lead:1}},
+    {label:"Comfort and emotional support", pts:{people:3}},
+    {label:"A creative workaround", pts:{creative:2}},
+    {label:"A concrete, step-by-step fix", pts:{detail:2,hands:1}},
+  ]},
+  {text:"Which of these annoys you the most?", options:[
+    {label:"Sloppy, error-filled work", pts:{detail:3}},
+    {label:"Rigid rules with no room to create", pts:{creative:2}},
+    {label:"Feeling unheard or ignored", pts:{comm:2}},
+    {label:"Work with no real-world impact", pts:{people:2,science:1}},
+  ]},
+  {text:"You'd feel proudest after...", options:[
+    {label:"Solving a genuinely hard logic problem", pts:{logic:3}},
+    {label:"Organizing a successful event", pts:{lead:3}},
+    {label:"Helping someone through a hard time", pts:{people:3}},
+    {label:"Building something from scratch", pts:{hands:3,creative:1}},
+  ]},
+  {text:"Before a class presentation, you'd...", options:[
+    {label:"Over-prepare with data and slides", pts:{logic:2,detail:1}},
+    {label:"Make it visually striking", pts:{creative:3}},
+    {label:"Focus on connecting with the audience", pts:{comm:3,people:1}},
+    {label:"Keep it short and let numbers speak", pts:{detail:2,logic:1}},
+  ]},
+  {text:"Long-term, the most exciting path sounds like...", options:[
+    {label:"Running your own business", pts:{lead:3}},
+    {label:"Discovering or inventing things", pts:{science:3,logic:1}},
+    {label:"Teaching or mentoring others", pts:{people:2,comm:2}},
+    {label:"Designing digital experiences", pts:{creative:2,hands:1}},
+  ]},
+];
+
+const TRAIT_MAX = {};
+TRAITS.forEach(t=>TRAIT_MAX[t]=0);
+QUESTIONS.forEach(q=>{
+  const maxPerTrait = {};
+  q.options.forEach(o=>{
+    Object.entries(o.pts).forEach(([t,v])=>{
+      maxPerTrait[t] = Math.max(maxPerTrait[t]||0, v);
+    });
+  });
+  Object.entries(maxPerTrait).forEach(([t,v])=>TRAIT_MAX[t]+=v);
+});
+
+const COURSES = [
+  {name:'BS Computer Science', v:[9,4,2,3,6,8,3,3],
+    licensure:'No board exam — thesis/capstone-based',
+    years:{
+      'Year 1':'Intro to Programming, Discrete Mathematics, Computer Fundamentals, GE subjects',
+      'Year 2':'Data Structures & Algorithms, Object-Oriented Programming, Database Systems',
+      'Year 3':'Automata Theory & Formal Languages, Software Engineering, Operating Systems, Networking, AI/Web electives',
+      'Year 4':'Thesis/Capstone Project, Advanced electives, Practicum, Ethics in Computing'
+    },
+    jobs:['Software Engineer','Data Scientist','Systems Analyst','Game Developer','Research Assistant']},
+
+  {name:'BS Information Technology', v:[8,3,3,4,5,9,4,2],
+    licensure:'No board exam',
+    years:{
+      'Year 1':'Intro to Computing, Programming Fundamentals, GE subjects',
+      'Year 2':'Web Systems, Database Management, Networking Fundamentals',
+      'Year 3':'Systems Integration, IT Infrastructure, Information Assurance & Security, specialization track',
+      'Year 4':'Capstone Project, On-the-job Training, IT Project Management'
+    },
+    jobs:['Network Administrator','IT Support Specialist','Web Developer','Systems Administrator']},
+
+  {name:'BS Nursing', v:[4,2,9,7,7,6,3,9],
+    licensure:'Requires passing the Nurse Licensure Exam (NLE)',
+    years:{
+      'Year 1':'Anatomy & Physiology, Chemistry, GE subjects',
+      'Year 2':'Fundamentals of Nursing, Microbiology, Health Assessment',
+      'Year 3':'Medical-Surgical Nursing, Maternal & Child Nursing, Community Health, clinical duty (RLE)',
+      'Year 4':'Hospital rotations (RLE), Nursing Research, Leadership & Management, NLE review'
+    },
+    jobs:['Staff Nurse','ICU / ER Nurse','Public Health Nurse','Clinical Instructor']},
+
+  {name:'BS Accountancy', v:[8,1,3,4,10,2,5,1],
+    licensure:'Requires passing the CPA Board Exam',
+    years:{
+      'Year 1':'Fundamentals of Accounting, Business Math, GE subjects',
+      'Year 2':'Intermediate Accounting, Cost Accounting, Business Law',
+      'Year 3':'Advanced Accounting, Auditing, Taxation, Management Advisory Services',
+      'Year 4':'CPA review subjects, Internship, Strategic Business Analysis'
+    },
+    jobs:['Certified Public Accountant','Auditor','Tax Consultant','Financial Analyst']},
+
+  {name:'BS Psychology', v:[3,4,9,8,6,1,4,6],
+    licensure:'Licensed Psychologist track requires further study/exam',
+    years:{
+      'Year 1':'General Psychology, GE subjects',
+      'Year 2':'Developmental Psychology, Abnormal Psychology, Statistics',
+      'Year 3':'Psychological Assessment, Industrial/Organizational Psych, Counseling Theories',
+      'Year 4':'Practicum, Thesis, Psychological Research'
+    },
+    jobs:['HR Specialist','Guidance Counselor','Behavioral Researcher','Case Worker']},
+
+  {name:'BS Education', v:[3,5,9,9,5,2,5,3],
+    licensure:'Requires passing the Licensure Exam for Teachers (LET)',
+    years:{
+      'Year 1':'Foundations of Education, GE subjects',
+      'Year 2':'Child & Adolescent Development, Curriculum Development, Facilitating Learning',
+      'Year 3':'Teaching Methods (major field), Assessment of Learning, Educational Technology',
+      'Year 4':'Student Teaching Internship, Thesis, LET Review'
+    },
+    jobs:['Classroom Teacher','Curriculum Developer','Instructional Designer','Training Officer']},
+
+  {name:'BS Civil Engineering', v:[9,5,3,3,8,9,5,2],
+    licensure:'Requires passing the Civil Engineering Board Exam',
+    years:{
+      'Year 1':'Calculus, Physics, Chemistry, GE subjects',
+      'Year 2':'Mechanics of Materials, Surveying, Fluid Mechanics',
+      'Year 3':'Structural Engineering, Geotechnical Engineering, Construction Methods',
+      'Year 4':'Design Project/Thesis, On-the-job Training, Licensure Review'
+    },
+    jobs:['Structural Engineer','Construction Manager','Project Engineer','Site Supervisor']},
+
+  {name:'BS Business Administration', v:[5,4,6,8,5,2,9,2],
+    licensure:'No board exam',
+    years:{
+      'Year 1':'Fundamentals of Management, Business Math, GE subjects',
+      'Year 2':'Marketing Management, Human Resource Management, Financial Management',
+      'Year 3':'Operations Management, Business Law, Strategic Management, major track',
+      'Year 4':'Business Plan/Thesis, On-the-job Training, Entrepreneurship'
+    },
+    jobs:['Marketing Associate','HR Officer','Business Development Analyst','Entrepreneur']},
+
+  {name:'BS Multimedia Arts', v:[3,9,4,6,4,7,3,1],
+    licensure:'No board exam — portfolio-based hiring',
+    years:{
+      'Year 1':'Design Fundamentals, Drawing, GE subjects',
+      'Year 2':'2D/3D Animation, Digital Photography, Visual Design',
+      'Year 3':'Game Design, Motion Graphics, UI/UX Design, Video Production',
+      'Year 4':'Portfolio Development, Thesis Project, Industry Internship'
+    },
+    jobs:['Animator','UI/UX Designer','Game Artist','Video Editor']},
+
+  {name:'BS Tourism Management', v:[3,5,9,9,4,3,6,2],
+    licensure:'No board exam',
+    years:{
+      'Year 1':'Intro to Tourism, GE subjects',
+      'Year 2':'Travel & Tour Operations, Hospitality Management, Food & Beverage Service',
+      'Year 3':'Airline Operations, Event Management, Tourism Planning & Development',
+      'Year 4':'On-the-job Training (hotel/airline/travel agency), Thesis, Sustainable Tourism'
+    },
+    jobs:['Travel Consultant','Hotel Operations Staff','Event Planner','Airline Cabin Crew']},
+];
+
+let currentQ = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let scoredResults = [];
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz(){
+  currentQ = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[currentQ];
+  document.getElementById('q-count').textContent = `Question ${currentQ+1} of ${QUESTIONS.length}`;
+  document.getElementById('progress-fill').style.width = `${(currentQ/QUESTIONS.length)*100}%`;
+  document.getElementById('q-text').textContent = q.text;
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  q.options.forEach((o,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = o.label;
+    btn.onclick = ()=>selectAnswer(i);
+    opts.appendChild(btn);
+  });
+  document.getElementById('q-back').style.visibility = currentQ===0 ? 'hidden' : 'visible';
+}
+
+function selectAnswer(i){
+  answers[currentQ] = i;
+  if(currentQ < QUESTIONS.length-1){
+    currentQ++;
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function prevQuestion(){
+  if(currentQ>0){ currentQ--; renderQuestion(); }
+}
+
+function finishQuiz(){
+  document.getElementById('progress-fill').style.width = '100%';
+  const raw = {};
+  TRAITS.forEach(t=>raw[t]=0);
+  answers.forEach((ansIdx,qIdx)=>{
+    if(ansIdx===null) return;
+    const pts = QUESTIONS[qIdx].options[ansIdx].pts;
+    Object.entries(pts).forEach(([t,v])=>raw[t]+=v);
+  });
+  const profile = TRAITS.map(t => TRAIT_MAX[t]>0 ? (raw[t]/TRAIT_MAX[t])*10 : 0);
+
+  scoredResults = COURSES.map(c=>({...c, score: cosine(profile, c.v)}))
+                          .sort((a,b)=>b.score-a.score);
+  renderResults();
+  showScreen('screen-results');
+}
+
+function cosine(a,b){
+  let dot=0,na=0,nb=0;
+  for(let i=0;i<a.length;i++){dot+=a[i]*b[i]; na+=a[i]*a[i]; nb+=b[i]*b[i];}
+  return (na===0||nb===0) ? 0 : dot/(Math.sqrt(na)*Math.sqrt(nb));
+}
+
+function renderResults(){
+  const list = document.getElementById('rank-list');
+  list.innerHTML = '';
+  scoredResults.forEach((c,i)=>{
+    const li = document.createElement('li');
+    li.className = 'rank-item';
+    li.onclick = ()=>showDetail(c);
+    li.innerHTML = `
+      <div class="rank-num">${i+1}</div>
+      <div>
+        <div class="course-name">${c.name}</div>
+        <div class="course-meta">${c.jobs.slice(0,3).join(', ')}</div>
+      </div>
+      <div class="match-pct">${Math.round(c.score*100)}%</div>
+    `;
+    list.appendChild(li);
+  });
+}
+
+function showDetail(course){
+  document.getElementById('d-match').textContent = `${Math.round(course.score*100)}% match`;
+  document.getElementById('d-name').textContent = course.name;
+  document.getElementById('d-licensure').textContent = course.licensure;
+
+  const yearsEl = document.getElementById('d-years');
+  yearsEl.innerHTML = '';
+  Object.entries(course.years).forEach(([year, subjects])=>{
+    yearsEl.innerHTML += `
+      <div class="year-block">
+        <div class="year-title">${year}</div>
+        <div class="year-subjects">${subjects}</div>
+      </div>
+    `;
+  });
+
+  const jobsEl = document.getElementById('d-jobs');
+  jobsEl.innerHTML = course.jobs.map(j=>`<div class="job-pill">${j}</div>`).join('');
+
+  showScreen('screen-detail');
+}
+
+function showResults(){ showScreen('screen-results'); }
+</script>
+</body>
+</html>
