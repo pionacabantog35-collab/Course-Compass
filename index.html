@@ -2,30 +2,37 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Course Compass</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F7F8FA;
-    --card:#FFFFFF;
-    --ink:#111827;
-    --ink-soft:#6B7280;
-    --ink-faint:#9CA3AF;
-    --primary:#4F46E5;
-    --primary-hover:#4338CA;
-    --primary-soft:#EEF0FE;
-    --good:#059669;
-    --good-soft:#ECFDF5;
-    --mid:#D97706;
-    --mid-soft:#FFFBEB;
-    --border:#E5E7EB;
-    --shadow: 0 1px 2px rgba(17,24,39,0.04), 0 8px 24px -12px rgba(17,24,39,0.10);
+    --bg:#F5EEDC;
+    --card:#FBF6E9;
+    --ink:#25324A;
+    --ink-soft:#5E6E82;
+    --ink-faint:#9BA6B3;
+    --brass:#B5842C;
+    --brass-hover:#98701F;
+    --brass-soft:#F3E6C3;
+    --north:#A6412E;
+    --north-soft:#F6E1DB;
+    --good:#3C7A6C;
+    --good-soft:#E4F0EA;
+    --mid:#B5842C;
+    --mid-soft:#F3E6C3;
+    --border:#DFCEA0;
+    --shadow: 0 2px 10px rgba(37,50,74,0.06), 0 24px 48px -26px rgba(37,50,74,0.35);
   }
   *{box-sizing:border-box;}
   body{
     margin:0; min-height:100vh;
-    background:var(--bg);
+    background:
+      repeating-radial-gradient(circle at 50% 0%, rgba(181,132,44,0.05) 0px, rgba(181,132,44,0.05) 1px, transparent 1px, transparent 64px),
+      radial-gradient(600px 420px at 10% -8%, #EFE2BC 0%, rgba(239,226,188,0) 65%),
+      radial-gradient(560px 420px at 105% 12%, #E7DCC4 0%, rgba(231,220,196,0) 65%),
+      var(--bg);
     color:var(--ink);
     font-family:'Inter', sans-serif;
     padding:48px 20px 70px;
@@ -33,114 +40,150 @@
   }
   .wrap{max-width:640px; margin:0 auto;}
   .eyebrow{
-    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.12em;
-    text-transform:uppercase; color:var(--primary); margin-bottom:14px; font-weight:500;
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--brass); margin-bottom:14px; font-weight:600;
+    display:flex; align-items:center; justify-content:center; gap:8px;
   }
+  .eyebrow .dash{width:20px; height:1.5px; background:var(--brass); display:inline-block; opacity:.6;}
   h1{
-    font-family:'Sora', sans-serif; font-weight:700; font-size:36px; line-height:1.15;
-    margin:0 0 14px; letter-spacing:-0.02em; color:var(--ink);
+    font-family:'Cinzel', serif; font-weight:700; font-size:32px; line-height:1.25;
+    margin:0 0 14px; letter-spacing:0.01em; color:var(--ink); text-align:center;
   }
-  h1 span{color:var(--primary);}
-  p.sub{color:var(--ink-soft); font-size:15.5px; line-height:1.65; max-width:480px; margin:0;}
+  h1 span{color:var(--north);}
+  p.sub{color:var(--ink-soft); font-size:15px; line-height:1.65; max-width:460px; margin:0 auto; font-weight:500; text-align:center;}
   .screen{display:none;}
-  .screen.active{display:block; animation:fadein .25s ease;}
-  @keyframes fadein{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+  .screen.active{display:block; animation:fadein .3s ease;}
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
 
   .card{
-    background:var(--card); border:1px solid var(--border); border-radius:16px;
-    box-shadow:var(--shadow); padding:32px;
+    background:var(--card); border:1.5px solid var(--border); border-radius:20px;
+    box-shadow:var(--shadow); padding:36px; position:relative; overflow:hidden;
+  }
+  .card::before{
+    content:""; position:absolute; inset:8px; border:1px solid rgba(181,132,44,0.28); border-radius:14px; pointer-events:none;
+  }
+
+  /* --- compass rose --- */
+  .compass-wrap{display:flex; justify-content:center; margin:2px 0 20px;}
+  .compass-svg{display:block; overflow:visible;}
+  .compass-ring-outer{fill:none; stroke:var(--brass); stroke-width:2;}
+  .compass-ring-inner{fill:none; stroke:var(--border); stroke-width:1;}
+  .compass-tick{stroke:var(--ink-faint); stroke-width:1;}
+  .compass-tick.major{stroke:var(--ink); stroke-width:2;}
+  .compass-label{font-family:'Cinzel',serif; font-size:15px; font-weight:700; fill:var(--ink);}
+  .compass-label-n{fill:var(--north);}
+  .compass-needle{transition:transform .5s cubic-bezier(.4,0,.2,1); transform-origin:100px 100px;}
+  .needle-north{fill:var(--north);}
+  .needle-south{fill:var(--ink);}
+  .compass-hub{fill:var(--brass); stroke:var(--card); stroke-width:2;}
+  .bearing-label{
+    text-align:center; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    color:var(--ink-faint); letter-spacing:0.06em; margin-top:2px;
   }
 
   .start-btn{
-    margin-top:26px; background:var(--primary); color:#fff; font-family:'Inter',sans-serif;
-    font-weight:600; font-size:14.5px; border:none; cursor:pointer;
-    padding:13px 24px; border-radius:10px; transition:background .15s, transform .1s;
+    display:block; margin:26px auto 0; background:var(--north); color:#FBF6E9; font-family:'Cinzel',serif;
+    font-weight:600; font-size:14.5px; letter-spacing:0.03em; border:none; cursor:pointer;
+    padding:14px 30px; border-radius:8px; transition:background .15s, transform .12s;
+    box-shadow:0 10px 22px -10px rgba(166,65,46,0.55);
   }
-  .start-btn:hover{background:var(--primary-hover);}
+  .start-btn:hover{background:#8F3625; transform:translateY(-1px);}
   .start-btn:active{transform:scale(0.98);}
 
-  .progress-track{height:6px; background:var(--border); border-radius:10px; margin:24px 0 32px; overflow:hidden;}
-  .progress-fill{height:100%; background:var(--primary); width:0%; transition:width .35s ease; border-radius:10px;}
-  .q-count{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-faint); margin-bottom:6px; font-weight:500;}
-  .q-text{font-family:'Sora',sans-serif; font-weight:600; font-size:22px; line-height:1.35; margin-bottom:24px; color:var(--ink);}
+  .badge-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:22px; justify-content:center;}
+  .mini-badge{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:600; color:var(--ink-soft); background:var(--bg);
+    border:1.5px solid var(--border); padding:6px 12px; border-radius:20px;
+  }
+
+  .q-count{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-faint); text-align:center; margin-bottom:2px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;}
+  .q-text{font-family:'Cinzel',serif; font-weight:600; font-size:20px; line-height:1.4; margin:18px 0 24px; color:var(--ink); text-align:center;}
   .options{display:flex; flex-direction:column; gap:10px;}
   .option{
-    text-align:left; background:var(--card); border:1.5px solid var(--border); border-radius:12px;
-    padding:15px 18px; font-family:'Inter',sans-serif; font-size:14.5px; font-weight:500; color:var(--ink);
+    text-align:left; background:var(--card); border:1.5px solid var(--border); border-radius:10px;
+    padding:15px 18px; font-family:'Inter',sans-serif; font-size:14.5px; font-weight:600; color:var(--ink);
     cursor:pointer; transition: border-color .15s, background .15s, transform .1s;
-    display:flex; align-items:center; gap:12px;
+    display:flex; align-items:center; gap:13px;
   }
   .option::before{
-    content:""; width:8px; height:8px; border-radius:50%; border:1.5px solid var(--border);
-    flex-shrink:0; transition:border-color .15s, background .15s;
+    content:""; width:8px; height:8px; border:1.5px solid var(--ink-faint); flex-shrink:0;
+    transform:rotate(45deg); transition:border-color .15s, background .15s;
   }
-  .option:hover{border-color:var(--primary); background:var(--primary-soft);}
-  .option:hover::before{border-color:var(--primary); background:var(--primary);}
+  .option:hover{border-color:var(--brass); background:var(--brass-soft); transform:translateX(2px);}
+  .option:hover::before{border-color:var(--north); background:var(--north);}
   .quiz-nav{margin-top:22px; display:flex; justify-content:space-between; align-items:center;}
   .back-link{
-    background:none; border:none; color:var(--ink-faint); font-family:'Inter',sans-serif;
-    font-size:13.5px; font-weight:500; cursor:pointer; padding:0;
+    background:none; border:none; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px; font-weight:600; cursor:pointer; padding:0; letter-spacing:0.02em;
   }
-  .back-link:hover{color:var(--ink);}
+  .back-link:hover{color:var(--north);}
 
-  .rank-list{list-style:none; margin:24px 0 0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .rank-list{list-style:none; margin:8px 0 0; padding:0; display:flex; flex-direction:column; gap:12px;}
   .rank-item{
-    display:grid; grid-template-columns: 30px 1fr 72px; gap:14px; align-items:center;
-    padding:16px; cursor:pointer; border-radius:12px; border:1.5px solid var(--border);
-    transition:border-color .15s, background .15s;
+    display:grid; grid-template-columns: 56px 1fr 68px; gap:14px; align-items:center;
+    padding:16px; cursor:pointer; border-radius:14px; border:1.5px solid var(--border);
+    transition:border-color .15s, background .15s, transform .1s; background:var(--card);
   }
-  .rank-item:hover{border-color:var(--primary); background:var(--primary-soft);}
-  .rank-num{font-family:'Sora',sans-serif; font-size:17px; font-weight:700; color:var(--ink-faint);}
-  .rank-item:nth-child(1) .rank-num{color:var(--primary);}
-  .course-name{font-weight:600; font-size:15px; margin-bottom:3px; color:var(--ink);}
-  .course-meta{font-size:12.5px; color:var(--ink-soft);}
+  .rank-item:hover{border-color:var(--brass); background:var(--brass-soft); transform:translateY(-1px);}
+  .rank-item.gold{border-color:var(--north); background:var(--north-soft);}
+  .rank-item.gold:hover{background:#F2D2C8;}
+  .rank-bearing{
+    width:44px; height:44px; border-radius:50%; border:2px solid var(--brass);
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    font-family:'IBM Plex Mono',monospace; background:var(--bg);
+  }
+  .rank-item.gold .rank-bearing{border-color:var(--north); background:var(--north-soft);}
+  .rank-bearing .rb-dir{font-size:12px; font-weight:700; color:var(--ink); line-height:1;}
+  .rank-bearing .rb-deg{font-size:8.5px; color:var(--ink-faint); line-height:1; margin-top:1px;}
+  .course-name{font-family:'Cinzel',serif; font-weight:600; font-size:15.5px; margin-bottom:3px; color:var(--ink);}
+  .course-meta{font-size:12.5px; color:var(--ink-soft); font-weight:500;}
   .match-pct{
-    font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; text-align:center;
-    padding:5px 0; border-radius:20px; background:var(--good-soft); color:var(--good);
+    font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:700; text-align:center;
+    padding:6px 0; border-radius:20px; background:var(--good-soft); color:var(--good);
   }
-  .match-pct.mid{background:var(--mid-soft); color:var(--mid);}
-  .redo-link{margin-top:22px; display:inline-block;}
+  .match-pct.mid{background:var(--mid-soft); color:var(--brass-hover);}
+  .redo-link{margin-top:24px; display:inline-block;}
 
-  .strengths{margin-top:28px; padding-top:22px; border-top:1px solid var(--border);}
-  .strengths-title{font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-faint); margin-bottom:14px;}
-  .strength-row{display:grid; grid-template-columns:120px 1fr 34px; align-items:center; gap:10px; margin-bottom:9px;}
-  .strength-label{font-size:13px; color:var(--ink-soft); font-weight:500;}
+  .strengths{margin-top:30px; padding-top:22px; border-top:1px dashed var(--border);}
+  .strengths-title{font-family:'Cinzel',serif; font-size:13px; font-weight:600; letter-spacing:0.04em; color:var(--ink); margin-bottom:16px; text-transform:uppercase;}
+  .strength-row{display:grid; grid-template-columns:112px 1fr 34px; align-items:center; gap:10px; margin-bottom:10px;}
+  .strength-label{font-size:12.5px; color:var(--ink-soft); font-weight:600;}
   .strength-track{height:6px; background:var(--border); border-radius:6px; overflow:hidden;}
-  .strength-fill{height:100%; background:var(--primary); border-radius:6px;}
-  .strength-val{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-faint); text-align:right;}
+  .strength-fill{height:100%; background:linear-gradient(90deg, var(--brass), var(--north)); border-radius:6px;}
+  .strength-val{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint); text-align:right; font-weight:600;}
 
   .detail-back{
-    margin-bottom:20px; color:var(--primary); background:none; border:none; padding:0;
-    font-family:'Inter',sans-serif; font-size:13.5px; font-weight:600; cursor:pointer;
+    margin-bottom:20px; color:var(--brass); background:none; border:none; padding:0;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; font-weight:600; cursor:pointer;
   }
-  .detail-back:hover{text-decoration:underline;}
-  .detail-head{border-bottom:1px solid var(--border); padding-bottom:22px; margin-bottom:24px;}
+  .detail-back:hover{text-decoration:underline; color:var(--north);}
+  .detail-head{border-bottom:1px dashed var(--border); padding-bottom:22px; margin-bottom:24px; text-align:left;}
   .detail-match{
-    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500;
-    background:var(--good-soft); color:var(--good); padding:4px 12px; border-radius:20px; margin-bottom:14px;
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700;
+    background:var(--good-soft); color:var(--good); padding:5px 14px; border-radius:20px; margin-bottom:14px;
   }
-  h2{font-family:'Sora',sans-serif; font-weight:700; font-size:26px; margin:0 0 8px; letter-spacing:-0.01em;}
-  .licensure{font-size:13px; color:var(--ink-soft);}
+  h2{font-family:'Cinzel',serif; font-weight:700; font-size:24px; margin:0 0 8px; letter-spacing:0.01em; text-align:left;}
+  .licensure{font-size:13px; color:var(--ink-soft); font-weight:600;}
   .section-label{
     font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase;
-    letter-spacing:0.08em; color:var(--primary); margin:26px 0 14px; font-weight:500;
+    letter-spacing:0.08em; color:var(--brass); margin:26px 0 14px; font-weight:600;
   }
   .year-block{
-    position:relative; padding-left:22px; margin-bottom:18px;
+    position:relative; padding-left:24px; margin-bottom:18px;
   }
   .year-block::before{
-    content:""; position:absolute; left:0; top:4px; width:9px; height:9px; border-radius:50%;
-    background:var(--primary-soft); border:2px solid var(--primary);
+    content:""; position:absolute; left:0; top:4px; width:10px; height:10px;
+    background:var(--brass-soft); border:2px solid var(--brass); transform:rotate(45deg);
   }
   .year-block::after{
     content:""; position:absolute; left:4px; top:16px; bottom:-14px; width:1.5px; background:var(--border);
   }
   .year-block:last-child::after{display:none;}
-  .year-title{font-family:'Sora',sans-serif; font-weight:600; font-size:14.5px; margin-bottom:4px; color:var(--ink);}
-  .year-subjects{font-size:13.5px; color:var(--ink-soft); line-height:1.6;}
+  .year-title{font-family:'Cinzel',serif; font-weight:600; font-size:14px; margin-bottom:4px; color:var(--ink);}
+  .year-subjects{font-size:13px; color:var(--ink-soft); line-height:1.6; font-weight:500;}
   .job-grid{display:flex; flex-wrap:wrap; gap:8px;}
   .job-pill{
-    font-size:13px; font-weight:500; padding:7px 14px; border:1px solid var(--border);
+    font-size:12.5px; font-weight:600; padding:7px 14px; border:1.5px solid var(--border);
     border-radius:20px; background:var(--bg); color:var(--ink);
   }
 </style>
@@ -150,17 +193,24 @@
 
   <section class="screen active" id="screen-intro">
     <div class="card">
-      <div class="eyebrow">Course recommender · knowledge-graph matching</div>
-      <h1>Find your <span>college fit</span></h1>
-      <p class="sub">Ten quick questions about how you think, work, and what pulls your attention. No right answers — just answer as yourself, not who you think you should be.</p>
-      <button class="start-btn" onclick="startQuiz()">Begin self-assessment →</button>
+      <div class="eyebrow"><span class="dash"></span>Course Compass · career bearings<span class="dash"></span></div>
+      <div class="compass-wrap" id="compass-intro"></div>
+      <h1>Find your <span>true north</span></h1>
+      <p class="sub">Twenty quick questions to read your bearings — matched against 39 college programs. No right answers, just answer as yourself, and let the needle settle.</p>
+      <button class="start-btn" onclick="startQuiz()">Take your bearings →</button>
+      <div class="badge-row">
+        <span class="mini-badge">39 programs</span>
+        <span class="mini-badge">20 questions</span>
+        <span class="mini-badge">top 3 headings</span>
+      </div>
     </div>
   </section>
 
   <section class="screen" id="screen-quiz">
     <div class="card">
-      <div class="q-count" id="q-count">Question 1 of 10</div>
-      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="compass-wrap" id="compass-quiz" style="margin-bottom:6px;"></div>
+      <div class="bearing-label" id="bearing-label">HEADING 000°</div>
+      <div class="q-count" id="q-count">Question 1 of 20</div>
       <div class="q-text" id="q-text"></div>
       <div class="options" id="q-options"></div>
       <div class="quiz-nav">
@@ -172,31 +222,32 @@
 
   <section class="screen" id="screen-results">
     <div class="card">
-      <div class="eyebrow">Your results</div>
-      <h1>Nearest <span>programs</span></h1>
-      <p class="sub">Ranked by how closely your profile matches each program's demands, across 8 traits. Tap any program to see the 4-year path and where it tends to lead.</p>
+      <div class="eyebrow"><span class="dash"></span>Your bearings, read<span class="dash"></span></div>
+      <div class="compass-wrap" id="compass-results"></div>
+      <h1>The needle points to <span id="true-north-name">—</span></h1>
+      <p class="sub">Out of 39 programs, these three headings lined up closest with your answers. Tap any of them to chart the 4-year course and see where it leads.</p>
       <ol class="rank-list" id="rank-list"></ol>
       <div class="strengths">
-        <div class="strengths-title">Your top traits</div>
+        <div class="strengths-title">Your strongest bearings</div>
         <div id="strengths-bars"></div>
       </div>
-      <a class="redo-link back-link" onclick="startQuiz()" style="cursor:pointer;">↺ Retake the assessment</a>
+      <a class="redo-link back-link" onclick="startQuiz()" style="cursor:pointer;">↺ Recalibrate the compass</a>
     </div>
   </section>
 
   <section class="screen" id="screen-detail">
     <div class="card">
-      <button class="detail-back" onclick="showResults()">← Back to matches</button>
+      <button class="detail-back" onclick="showResults()">← Back to your bearings</button>
       <div class="detail-head">
         <div class="detail-match" id="d-match">— % match</div>
         <h2 id="d-name"></h2>
         <div class="licensure" id="d-licensure"></div>
       </div>
 
-      <div class="section-label">Four-year path</div>
+      <div class="section-label">Chart your course</div>
       <div id="d-years"></div>
 
-      <div class="section-label">Where this tends to lead</div>
+      <div class="section-label">Where this course leads</div>
       <div class="job-grid" id="d-jobs"></div>
     </div>
   </section>
@@ -266,6 +317,66 @@ const QUESTIONS = [
     {label:"Discovering or inventing things", pts:{science:3,logic:1}},
     {label:"Teaching or mentoring others", pts:{people:2,comm:2}},
     {label:"Designing digital experiences", pts:{creative:2,hands:1}},
+  ]},
+  {text:"Which of these appeals to you more?", options:[
+    {label:"Diagnosing exactly what's wrong with a system", pts:{logic:2,detail:1}},
+    {label:"Comforting someone who's stressed", pts:{people:3}},
+    {label:"Pitching an idea to convince others", pts:{comm:3,lead:1}},
+    {label:"Prototyping a working model with your hands", pts:{hands:3}},
+  ]},
+  {text:"You get more energy from...", options:[
+    {label:"Solving equations or working through numbers", pts:{logic:3}},
+    {label:"Being on stage or in the spotlight", pts:{comm:2,lead:1}},
+    {label:"Quiet, hands-on tinkering", pts:{hands:3}},
+    {label:"Caring for someone who's unwell", pts:{people:3,science:1}},
+  ]},
+  {text:"Your ideal workspace looks like...", options:[
+    {label:"A lab full of equipment and experiments", pts:{science:3}},
+    {label:"An office with data, reports, and spreadsheets", pts:{logic:2,detail:2}},
+    {label:"A studio full of design tools", pts:{creative:3}},
+    {label:"Out in the field or the community", pts:{people:2,hands:1}},
+  ]},
+  {text:"When learning something new, you prefer...", options:[
+    {label:"A clear, step-by-step manual", pts:{detail:3}},
+    {label:"Hands-on trial and error", pts:{hands:3}},
+    {label:"Group discussion and debate", pts:{comm:2,people:1}},
+    {label:"Understanding the theory first", pts:{logic:3,science:1}},
+  ]},
+  {text:"Which achievement would excite you most?", options:[
+    {label:"Leading a team to hit a big target", pts:{lead:3}},
+    {label:"Discovering or publishing new knowledge", pts:{science:3}},
+    {label:"Designing something people love using", pts:{creative:2,hands:1}},
+    {label:"Directly changing someone's life for the better", pts:{people:3}},
+  ]},
+  {text:"Given extra budget for your school, you'd spend it on...", options:[
+    {label:"New lab and scientific equipment", pts:{science:3}},
+    {label:"Tech and computer upgrades", pts:{logic:2,hands:1}},
+    {label:"Art and creative supplies", pts:{creative:3}},
+    {label:"Community outreach programs", pts:{people:3,comm:1}},
+  ]},
+  {text:"Which topic makes you want to fall down a rabbit hole?", options:[
+    {label:"Space, the ocean, or how the body works", pts:{science:3}},
+    {label:"Money, markets, or how businesses grow", pts:{logic:2,lead:1}},
+    {label:"Why people think and act the way they do", pts:{people:3}},
+    {label:"How machines, engines, or gadgets work", pts:{hands:3}},
+  ]},
+  {text:"A friend is moving apartments this weekend. You'd...", options:[
+    {label:"Make a checklist and organize everyone's tasks", pts:{lead:2,detail:1}},
+    {label:"Just grab the boxes and start lifting", pts:{hands:3}},
+    {label:"Keep spirits up and chat while helping", pts:{people:2,comm:1}},
+    {label:"Figure out the most efficient way to pack the truck", pts:{logic:2,detail:1}},
+  ]},
+  {text:"Pick a documentary to watch tonight:", options:[
+    {label:"Deep-sea creatures or the human brain", pts:{science:3}},
+    {label:"A true-crime investigation", pts:{logic:2,detail:1}},
+    {label:"Behind the scenes of a growing company", pts:{lead:2,comm:1}},
+    {label:"Artists and their creative process", pts:{creative:3}},
+  ]},
+  {text:"If money didn't matter, you'd spend your days...", options:[
+    {label:"Running experiments in a lab", pts:{science:3}},
+    {label:"Running and growing your own company", pts:{lead:3}},
+    {label:"Making art, music, or stories", pts:{creative:3}},
+    {label:"Helping people work through their problems", pts:{people:3}},
   ]},
 ];
 
@@ -381,6 +492,296 @@ const COURSES = [
       'Year 4':'On-the-job Training (hotel/airline/travel agency), Thesis, Sustainable Tourism'
     },
     jobs:['Travel Consultant','Hotel Operations Staff','Event Planner','Airline Cabin Crew']},
+
+  {name:'BS Electronics Engineering', v:[9,3,2,3,8,9,4,4],
+    licensure:'Requires passing the ECE Board Exam',
+    years:{
+      'Year 1':'Calculus, Physics, GE subjects',
+      'Year 2':'Circuit Analysis, Electronics 1 & 2, Signals & Systems',
+      'Year 3':'Communications Engineering, Microprocessor Systems, Control Systems',
+      'Year 4':'Design Project/Thesis, On-the-job Training, Licensure Review'
+    },
+    jobs:['Electronics Engineer','Telecom Engineer','Embedded Systems Developer','Field Engineer']},
+
+  {name:'BS Electrical Engineering', v:[9,2,2,3,8,9,4,4],
+    licensure:'Requires passing the EE Board Exam',
+    years:{
+      'Year 1':'Calculus, Physics, GE subjects',
+      'Year 2':'Circuit Theory, Electromagnetics, Electrical Machines',
+      'Year 3':'Power Systems, Control Systems, Industrial Electronics',
+      'Year 4':'Design Project/Thesis, On-the-job Training, Licensure Review'
+    },
+    jobs:['Electrical Engineer','Power Systems Engineer','Plant Engineer','Maintenance Engineer']},
+
+  {name:'BS Mechanical Engineering', v:[8,4,2,3,7,9,4,3],
+    licensure:'Requires passing the ME Board Exam',
+    years:{
+      'Year 1':'Calculus, Physics, Chemistry, GE subjects',
+      'Year 2':'Thermodynamics, Mechanics of Materials, Fluid Mechanics',
+      'Year 3':'Machine Design, Heat Transfer, Manufacturing Processes',
+      'Year 4':'Design Project/Thesis, On-the-job Training, Licensure Review'
+    },
+    jobs:['Mechanical Engineer','Design Engineer','HVAC Engineer','Maintenance Supervisor']},
+
+  {name:'BS Industrial Engineering', v:[7,3,4,6,8,5,7,2],
+    licensure:'No board exam in most regions',
+    years:{
+      'Year 1':'Calculus, Physics, GE subjects',
+      'Year 2':'Operations Research, Engineering Economy, Work Measurement',
+      'Year 3':'Production Planning, Quality Engineering, Supply Chain Management',
+      'Year 4':'Systems Design Project/Thesis, On-the-job Training'
+    },
+    jobs:['Process Improvement Analyst','Supply Chain Planner','Quality Engineer','Operations Manager']},
+
+  {name:'BS Architecture', v:[6,9,3,4,7,7,4,1],
+    licensure:'Requires passing the Architecture Board Exam',
+    years:{
+      'Year 1':'Design Fundamentals, Drafting, GE subjects',
+      'Year 2':'Architectural Design 1-2, Building Technology, Structural Concepts',
+      'Year 3':'Architectural Design 3-4, Urban Planning, Environmental Design',
+      'Year 4':'Thesis Design Project, On-the-job Training, Licensure Review'
+    },
+    jobs:['Architect','Urban Planner','Interior Designer','Design Consultant']},
+
+  {name:'BS Pharmacy', v:[7,2,5,5,9,4,3,8],
+    licensure:'Requires passing the Pharmacist Licensure Exam',
+    years:{
+      'Year 1':'Chemistry, Biology, GE subjects',
+      'Year 2':'Pharmaceutical Chemistry, Anatomy & Physiology, Microbiology',
+      'Year 3':'Pharmacology, Pharmaceutics, Clinical Pharmacy',
+      'Year 4':'Internship (hospital/community pharmacy), Thesis, Licensure Review'
+    },
+    jobs:['Community Pharmacist','Hospital Pharmacist','Medical Representative','Quality Control Analyst']},
+
+  {name:'BS Physical Therapy', v:[4,2,9,6,7,7,3,7],
+    licensure:'Requires passing the Physical Therapist Board Exam',
+    years:{
+      'Year 1':'Anatomy & Physiology, GE subjects',
+      'Year 2':'Kinesiology, Biomechanics, Pathology',
+      'Year 3':'Therapeutic Exercise, Clinical Medicine, Neurology',
+      'Year 4':'Clinical Internship (RLE), Thesis, Licensure Review'
+    },
+    jobs:['Physical Therapist','Rehabilitation Specialist','Sports Therapist','Clinic Supervisor']},
+
+  {name:'BS Medical Technology', v:[7,1,3,3,9,5,2,9],
+    licensure:'Requires passing the Medical Technologist Board Exam',
+    years:{
+      'Year 1':'Chemistry, Biology, GE subjects',
+      'Year 2':'Hematology, Microbiology, Clinical Chemistry',
+      'Year 3':'Immunology, Parasitology, Blood Banking',
+      'Year 4':'Clinical Laboratory Internship, Thesis, Licensure Review'
+    },
+    jobs:['Medical Technologist','Laboratory Supervisor','Research Lab Analyst','Quality Assurance Officer']},
+
+  {name:'BS Political Science', v:[4,3,7,9,5,1,7,2],
+    licensure:'No board exam — often a pre-law track',
+    years:{
+      'Year 1':'Philippine Government, Political Theory, GE subjects',
+      'Year 2':'Comparative Politics, Public Administration, International Relations',
+      'Year 3':'Philippine Foreign Policy, Local Governance, Research Methods',
+      'Year 4':'Thesis, Internship (government/NGO), Public Policy Analysis'
+    },
+    jobs:['Policy Analyst','Government Officer','Legislative Staff','NGO Program Officer']},
+
+  {name:'BS Criminology', v:[5,2,6,6,7,5,6,3],
+    licensure:'Requires passing the Criminologist Board Exam',
+    years:{
+      'Year 1':'Intro to Criminology, Philippine Constitution, GE subjects',
+      'Year 2':'Criminal Law, Law Enforcement Administration, Criminalistics',
+      'Year 3':'Forensic Science, Correctional Administration, Criminal Investigation',
+      'Year 4':'On-the-job Training, Thesis, Board Exam Review'
+    },
+    jobs:['Police Officer','Forensic Investigator','Security Consultant','Correctional Officer']},
+
+  {name:'BA Communication', v:[3,7,6,9,4,2,5,1],
+    licensure:'No board exam',
+    years:{
+      'Year 1':'Intro to Communication, Writing, GE subjects',
+      'Year 2':'Broadcast Media, Public Relations, Media Writing',
+      'Year 3':'Digital Media Production, Advertising, Media Ethics',
+      'Year 4':'Thesis/Media Project, Internship (media/PR agency)'
+    },
+    jobs:['Content Creator','PR Officer','Broadcast Journalist','Social Media Manager']},
+
+  {name:'BS Hotel & Restaurant Management', v:[2,4,9,8,6,4,6,1],
+    licensure:'No board exam',
+    years:{
+      'Year 1':'Intro to Hospitality, Culinary Fundamentals, GE subjects',
+      'Year 2':'Food & Beverage Operations, Housekeeping Management, Nutrition',
+      'Year 3':'Culinary Arts, Events Management, Hotel Front Office Operations',
+      'Year 4':'On-the-job Training (hotel/restaurant), Thesis, Entrepreneurship'
+    },
+    jobs:['Restaurant Manager','Hotel Front Office Staff','Chef','Catering Supervisor']},
+
+  {name:'BS Agriculture', v:[5,3,6,4,6,7,4,8],
+    licensure:'Requires passing the Agriculturist Board Exam',
+    years:{
+      'Year 1':'Biology, Chemistry, GE subjects',
+      'Year 2':'Crop Science, Soil Science, Animal Science',
+      'Year 3':'Agribusiness Management, Plant Pathology, Agricultural Extension',
+      'Year 4':'On-the-job Training (farm/agribusiness), Thesis, Licensure Review'
+    },
+    jobs:['Agriculturist','Farm Manager','Agribusiness Analyst','Extension Officer']},
+
+  {name:'BS Social Work', v:[2,2,10,8,5,1,5,3],
+    licensure:'Requires passing the Social Worker Board Exam',
+    years:{
+      'Year 1':'Intro to Social Work, Human Behavior, GE subjects',
+      'Year 2':'Social Welfare Policy, Community Organizing, Case Management',
+      'Year 3':'Fieldwork Practicum 1-2, Social Research, Group Work',
+      'Year 4':'Fieldwork Practicum 3, Thesis, Licensure Review'
+    },
+    jobs:['Social Worker','Case Manager','Community Development Officer','NGO Program Coordinator']},
+
+  {name:'BS Biology', v:[6,2,4,3,7,5,2,10],
+    licensure:'No board exam (LET route if teaching)',
+    years:{
+      'Year 1':'General Biology, Chemistry, GE subjects',
+      'Year 2':'Cell Biology, Genetics, Microbiology, Botany',
+      'Year 3':'Ecology, Physiology, Biostatistics, Molecular Biology',
+      'Year 4':'Undergraduate Thesis/Research, Field Studies, electives'
+    },
+    jobs:['Research Assistant','Laboratory Technician','Science Educator','Biotech Analyst']},
+
+  {name:'BS Chemistry', v:[7,2,2,3,8,5,2,10],
+    licensure:'Requires passing the Chemist Licensure Exam',
+    years:{
+      'Year 1':'General & Inorganic Chemistry, Calculus, GE subjects',
+      'Year 2':'Organic Chemistry, Analytical Chemistry, Physical Chemistry',
+      'Year 3':'Biochemistry, Instrumental Analysis, Industrial Chemistry',
+      'Year 4':'Undergraduate Thesis, Internship, Licensure Review'
+    },
+    jobs:['Chemist','Quality Control Analyst','Research Chemist','Lab Supervisor']},
+
+  {name:'BS Mathematics', v:[10,3,2,3,7,1,3,4],
+    licensure:'No board exam (LET route if teaching)',
+    years:{
+      'Year 1':'Calculus 1-2, Linear Algebra, GE subjects',
+      'Year 2':'Abstract Algebra, Real Analysis, Discrete Mathematics',
+      'Year 3':'Differential Equations, Number Theory, Probability & Statistics',
+      'Year 4':'Undergraduate Thesis, Topology/Complex Analysis electives'
+    },
+    jobs:['Data Analyst','Actuarial Analyst','Statistician','Math Teacher']},
+
+  {name:'BS Physics', v:[9,3,2,3,7,4,2,9],
+    licensure:'No board exam (LET route if teaching)',
+    years:{
+      'Year 1':'General Physics, Calculus, GE subjects',
+      'Year 2':'Classical Mechanics, Electromagnetism, Thermodynamics',
+      'Year 3':'Quantum Mechanics, Electronics, Computational Physics',
+      'Year 4':'Undergraduate Thesis/Research, Advanced electives'
+    },
+    jobs:['Research Physicist','Data Scientist','Instrumentation Specialist','Science Teacher']},
+
+  {name:'BS Chemical Engineering', v:[8,3,2,3,8,7,4,8],
+    licensure:'Requires passing the ChemE Board Exam',
+    years:{
+      'Year 1':'Calculus, General Chemistry, Physics, GE subjects',
+      'Year 2':'Organic Chemistry, Chemical Engineering Thermodynamics, Material & Energy Balances',
+      'Year 3':'Mass Transfer, Chemical Reaction Engineering, Plant Design',
+      'Year 4':'Design Project/Thesis, On-the-job Training, Licensure Review'
+    },
+    jobs:['Process Engineer','Plant Engineer','Quality Assurance Engineer','Petrochemical Engineer']},
+
+  {name:'BS Environmental Science', v:[6,3,5,5,7,5,4,9],
+    licensure:'No board exam',
+    years:{
+      'Year 1':'General Biology, Chemistry, GE subjects',
+      'Year 2':'Ecology, Environmental Chemistry, Earth Science',
+      'Year 3':'Environmental Impact Assessment, Pollution Control, Natural Resource Management',
+      'Year 4':'Field Research/Thesis, Internship (LGU/NGO/industry)'
+    },
+    jobs:['Environmental Analyst','Sustainability Officer','EIA Consultant','Conservation Specialist']},
+
+  {name:'BS Fisheries', v:[5,3,4,4,6,7,4,8],
+    licensure:'Requires passing the Fisheries Professional Board Exam',
+    years:{
+      'Year 1':'Biology, Chemistry, GE subjects',
+      'Year 2':'Aquaculture, Fish Biology, Fisheries Oceanography',
+      'Year 3':'Fish Processing Technology, Fisheries Resource Management, Aquatic Ecosystems',
+      'Year 4':'On-the-job Training, Thesis, Licensure Review'
+    },
+    jobs:['Aquaculture Technician','Fisheries Extension Officer','Fish Farm Manager','Resource Officer']},
+
+  {name:'BS Forestry', v:[5,3,4,3,6,8,4,8],
+    licensure:'Requires passing the Forester Licensure Exam',
+    years:{
+      'Year 1':'Biology, Chemistry, GE subjects',
+      'Year 2':'Forest Ecology, Silviculture, Forest Mensuration',
+      'Year 3':'Forest Resource Management, Watershed Management, Wood Science',
+      'Year 4':'Field Practicum, Thesis, Licensure Review'
+    },
+    jobs:['Forester','Park Ranger','Watershed Manager','Environmental Officer']},
+
+  {name:'Doctor of Veterinary Medicine', v:[6,2,7,5,8,7,3,10],
+    licensure:'Requires passing the Veterinarian Licensure Exam',
+    years:{
+      'Year 1-2':'Anatomy, Physiology, Biochemistry, Animal Science foundations',
+      'Year 3-4':'Pathology, Pharmacology, Animal Diseases, Surgery fundamentals',
+      'Year 5':'Clinical Rotations, Theriogenology, Veterinary Public Health',
+      'Year 6':'Clinical Internship, Thesis, Licensure Review'
+    },
+    jobs:['Veterinarian','Animal Hospital Practitioner','Livestock Health Officer','Veterinary Researcher']},
+
+  {name:'BS Nutrition and Dietetics', v:[5,2,7,6,7,3,3,8],
+    licensure:'Requires passing the Nutritionist-Dietitian Board Exam',
+    years:{
+      'Year 1':'Biology, Chemistry, GE subjects',
+      'Year 2':'Human Nutrition, Food Science, Physiology',
+      'Year 3':'Clinical Nutrition, Community Nutrition, Diet Therapy',
+      'Year 4':'Dietetic Internship, Thesis, Licensure Review'
+    },
+    jobs:['Registered Dietitian','Clinical Nutritionist','Food Service Manager','Wellness Consultant']},
+
+  {name:'Bachelor of Fine Arts', v:[2,10,4,5,4,7,3,1],
+    licensure:'No board exam — portfolio-based',
+    years:{
+      'Year 1':'Drawing, Design Fundamentals, Art History, GE subjects',
+      'Year 2':'Painting, Sculpture, Printmaking, Color Theory',
+      'Year 3':'Mixed Media, Studio Practice, Curatorial Studies',
+      'Year 4':'Thesis Exhibition, Portfolio Development, Internship'
+    },
+    jobs:['Visual Artist','Illustrator','Gallery Curator','Art Director']},
+
+  {name:'BS Legal Management', v:[5,4,5,9,6,1,7,2],
+    licensure:'No board exam — pre-law track',
+    years:{
+      'Year 1':'Philippine Constitution, Logic, GE subjects',
+      'Year 2':'Business Law, Legal Research, Political Theory',
+      'Year 3':'Legal Writing, Ethics, Comparative Legal Systems',
+      'Year 4':'Thesis, Internship (law office/corporate legal), Law School Prep'
+    },
+    jobs:['Legal Assistant','Paralegal','Compliance Officer','Law School Aspirant']},
+
+  {name:'BS Office Administration', v:[4,3,6,7,7,3,5,1],
+    licensure:'No board exam',
+    years:{
+      'Year 1':'Office Procedures, Business Communication, GE subjects',
+      'Year 2':'Records Management, Business Correspondence, Office Technology',
+      'Year 3':'Administrative Management, Events & Travel Coordination, HR Basics',
+      'Year 4':'On-the-job Training, Thesis/Capstone, Executive Support Practicum'
+    },
+    jobs:['Executive Assistant','Office Manager','Administrative Coordinator','Records Officer']},
+
+  {name:'BS Real Estate Management', v:[5,3,5,8,6,2,7,1],
+    licensure:'Requires passing the Real Estate Broker Licensure Exam',
+    years:{
+      'Year 1':'Business Fundamentals, GE subjects',
+      'Year 2':'Property Valuation, Real Estate Law, Urban Land Use',
+      'Year 3':'Property Management, Real Estate Finance, Appraisal',
+      'Year 4':'Internship (brokerage/appraisal firm), Thesis, Licensure Review'
+    },
+    jobs:['Real Estate Broker','Property Manager','Appraiser','Leasing Consultant']},
+
+  {name:'BS Geology', v:[7,3,2,3,7,6,3,9],
+    licensure:'Requires passing the Geologist Licensure Exam',
+    years:{
+      'Year 1':'Physics, Chemistry, Calculus, GE subjects',
+      'Year 2':'Mineralogy, Structural Geology, Petrology',
+      'Year 3':'Geochemistry, Hydrogeology, Geophysics',
+      'Year 4':'Field Camp, Thesis, Licensure Review'
+    },
+    jobs:['Geologist','Mining Field Officer','Hydrogeologist','Exploration Analyst']},
 ];
 
 const TRAIT_LABELS = {
@@ -398,17 +799,64 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
 }
 
+/* ---------- compass rose ---------- */
+function buildTicks(){
+  let out = '';
+  for(let deg=0; deg<360; deg+=15){
+    const major = deg % 90 === 0;
+    const medium = deg % 45 === 0;
+    const rOuter = 92;
+    const rInner = major ? 74 : (medium ? 79 : 84);
+    const rad = (deg-90) * Math.PI/180;
+    const x1 = 100 + rOuter*Math.cos(rad), y1 = 100 + rOuter*Math.sin(rad);
+    const x2 = 100 + rInner*Math.cos(rad), y2 = 100 + rInner*Math.sin(rad);
+    out += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="compass-tick${major?' major':''}"/>`;
+  }
+  return out;
+}
+const TICKS_MARKUP = buildTicks();
+
+function compassSVG(idSuffix, size){
+  return `
+  <svg viewBox="0 0 200 200" width="${size}" height="${size}" class="compass-svg">
+    <circle cx="100" cy="100" r="96" class="compass-ring-outer"/>
+    <circle cx="100" cy="100" r="80" class="compass-ring-inner"/>
+    ${TICKS_MARKUP}
+    <text x="100" y="30" class="compass-label compass-label-n" text-anchor="middle">N</text>
+    <text x="172" y="105" class="compass-label" text-anchor="middle">E</text>
+    <text x="100" y="180" class="compass-label" text-anchor="middle">S</text>
+    <text x="28" y="105" class="compass-label" text-anchor="middle">W</text>
+    <g id="needle-${idSuffix}" class="compass-needle">
+      <polygon points="100,16 109,100 100,94 91,100" class="needle-north"/>
+      <polygon points="100,184 109,100 100,106 91,100" class="needle-south"/>
+    </g>
+    <circle cx="100" cy="100" r="7" class="compass-hub"/>
+  </svg>`;
+}
+
+function setNeedle(idSuffix, deg){
+  const g = document.getElementById(`needle-${idSuffix}`);
+  if(g) g.style.transform = `rotate(${deg}deg)`;
+}
+
+document.getElementById('compass-intro').innerHTML = compassSVG('intro', 130);
+document.getElementById('compass-quiz').innerHTML = compassSVG('quiz', 84);
+document.getElementById('compass-results').innerHTML = compassSVG('results', 150);
+
 function startQuiz(){
   currentQ = 0;
   answers = new Array(QUESTIONS.length).fill(null);
   showScreen('screen-quiz');
+  setNeedle('quiz', 0);
   renderQuestion();
 }
 
 function renderQuestion(){
   const q = QUESTIONS[currentQ];
+  const deg = Math.round((currentQ/QUESTIONS.length)*360);
   document.getElementById('q-count').textContent = `Question ${currentQ+1} of ${QUESTIONS.length}`;
-  document.getElementById('progress-fill').style.width = `${(currentQ/QUESTIONS.length)*100}%`;
+  document.getElementById('bearing-label').textContent = `HEADING ${String(deg).padStart(3,'0')}°`;
+  setNeedle('quiz', deg);
   document.getElementById('q-text').textContent = q.text;
   const opts = document.getElementById('q-options');
   opts.innerHTML = '';
@@ -437,7 +885,6 @@ function prevQuestion(){
 }
 
 function finishQuiz(){
-  document.getElementById('progress-fill').style.width = '100%';
   const raw = {};
   TRAITS.forEach(t=>raw[t]=0);
   answers.forEach((ansIdx,qIdx)=>{
@@ -449,10 +896,20 @@ function finishQuiz(){
   lastProfile = profile;
 
   scoredResults = COURSES.map(c=>({...c, score: cosine(profile, c.v)}))
-                          .sort((a,b)=>b.score-a.score);
+                          .sort((a,b)=>b.score-a.score)
+                          .slice(0,3);
   renderResults();
   renderStrengths();
+  document.getElementById('true-north-name').textContent = scoredResults[0].name;
   showScreen('screen-results');
+  const needle = document.getElementById('needle-results');
+  if(needle){
+    needle.style.transition = 'none';
+    needle.style.transform = 'rotate(360deg)';
+    needle.getBoundingClientRect(); // force reflow
+    needle.style.transition = 'transform 1.1s cubic-bezier(.2,.7,.2,1)';
+    requestAnimationFrame(()=>{ needle.style.transform = 'rotate(0deg)'; });
+  }
 }
 
 function renderStrengths(){
@@ -473,16 +930,26 @@ function cosine(a,b){
   return (na===0||nb===0) ? 0 : dot/(Math.sqrt(na)*Math.sqrt(nb));
 }
 
+const BEARINGS = [
+  {dir:'N', deg:'000°', name:'True North'},
+  {dir:'NE', deg:'045°', name:'Second Bearing'},
+  {dir:'E', deg:'090°', name:'Third Bearing'},
+];
+
 function renderResults(){
   const list = document.getElementById('rank-list');
   list.innerHTML = '';
   scoredResults.forEach((c,i)=>{
     const li = document.createElement('li');
-    li.className = 'rank-item';
+    li.className = 'rank-item' + (i===0 ? ' gold' : '');
     li.onclick = ()=>showDetail(c);
     const pctClass = c.score >= 0.75 ? '' : 'mid';
+    const b = BEARINGS[i];
     li.innerHTML = `
-      <div class="rank-num">${i+1}</div>
+      <div class="rank-bearing" title="${b.name}">
+        <div class="rb-dir">${b.dir}</div>
+        <div class="rb-deg">${b.deg}</div>
+      </div>
       <div>
         <div class="course-name">${c.name}</div>
         <div class="course-meta">${c.jobs.slice(0,3).join(', ')}</div>
