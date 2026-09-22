@@ -34,3 +34,6 @@ Course Compass was created as a web development project focused on interactive u
 Completed / Prototype
 
 <img width="1250" height="670" alt="Course-Compass" src="https://github.com/user-attachments/assets/c397233f-7871-405c-9d99-5a537e153950" />
+
+<img width="1535" height="690" alt="image" src="https://github.com/user-attachments/assets/12e52473-3913-4aaa-a007-2ed4e9863c4a" />
+
